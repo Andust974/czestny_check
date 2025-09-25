@@ -3,21 +3,18 @@ name: Web Deploy
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
-    runs-on: self-hosted
-    labels: [ self-hosted, linux, aidomio ]  # метки нашего раннера
+    runs-on: [ self-hosted, linux, aidomio ]
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
-          # при желании можно зафиксировать версию:
-          # flutter-version: "3.24.4"
+          channel: stable
 
       - name: Flutter doctor
         run: |
@@ -36,5 +33,4 @@ jobs:
         run: |
           rm -rf /srv/cc_web/*
           cp -r build/web/* /srv/cc_web/
-          echo "Deployed at $(date -Is)"
         working-directory: .
