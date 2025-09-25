@@ -3,18 +3,32 @@ name: Web Deploy
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
   build-and-deploy:
-    runs-on: [ self-hosted, linux, aidomio ]
+    runs-on: [ self-hosted, linux, aidomio ]   # метки нашего раннера
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
+          cache: true
+
+      - name: Fix flutter git safe.directory
+        shell: bash
+        run: |
+          # На self-hosted Flutter лежит тут:
+          FLUTTER_DIR=/opt/hostedtoolcache/flutter
+          # Права (на всякий случай, не упадёт, если уже ок)
+          sudo chown -R $USER:$USER "$FLUTTER_DIR" || true
+          # Добавим все установлен­ные версии в список безопасных директорий git
+          for d in "$FLUTTER_DIR"/*-x64; do
+            [ -d "$d" ] && git config --global --add safe.directory "$d"
+          done
+          git config --global --add safe.directory "$FLUTTER_DIR" || true
 
       - name: Flutter doctor
         run: |
@@ -30,7 +44,9 @@ jobs:
         working-directory: .
 
       - name: Deploy to /srv/cc_web
+        shell: bash
         run: |
           rm -rf /srv/cc_web/*
           cp -r build/web/* /srv/cc_web/
+          echo "Deployed at $(date -Is)" > /srv/cc_web/DEPLOYED.txt
         working-directory: .
