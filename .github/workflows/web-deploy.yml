@@ -1,13 +1,15 @@
 name: Web Deploy
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
+    # ВАЛИДНЫЙ синтаксис: labels задаются внутри runs-on в виде массива
     runs-on: [ self-hosted, linux, aidomio ]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,22 +20,13 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Fix flutter git safe.directory
+      # Починить "dubious ownership" в кэше flutter внутри контейнера
+      - name: Fix git safe.directory for flutter cache
         shell: bash
         run: |
-          set -e
-          FLUTTER_DIR=/opt/hostedtoolcache/flutter
-          # если sudo есть — поправим владельца, иначе пропустим
-          if command -v sudo >/dev/null 2>&1; then
-            sudo chown -R "$USER":"$USER" "$FLUTTER_DIR" || true
-          fi
-          # добавим все версии Flutter в safe.directory (не ругается, если уже есть)
-          if [ -d "$FLUTTER_DIR" ]; then
-            git config --global --add safe.directory "$FLUTTER_DIR" || true
-            for d in "$FLUTTER_DIR"/*-x64; do
-              [ -d "$d" ] && git config --global --add safe.directory "$d" || true
-            done
-          fi
+          for d in /opt/hostedtoolcache/flutter/*/*; do
+            [ -d "$d" ] && git config --global --add safe.directory "$d" || true
+          done
 
       - name: Flutter doctor
         run: |
@@ -49,7 +42,6 @@ jobs:
         working-directory: .
 
       - name: Deploy to /srv/cc_web
-        shell: bash
         run: |
           rm -rf /srv/cc_web/*
           cp -r build/web/* /srv/cc_web/
