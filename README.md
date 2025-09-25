@@ -18,3 +18,4 @@
 - API: [https://api.aidomio.pl](https://api.aidomio.pl)
 
 Test deploy at 2025-09-25T13:58:42+00:00
+Ping 2025-09-25T16:11:18+00:00
