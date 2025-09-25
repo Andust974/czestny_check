@@ -35,11 +35,11 @@ jobs:
 
       - name: Get deps
         run: flutter pub get
-        working-directory: .
+        working-directory: ${{ github.workspace }}
 
       - name: Build web (release)
         run: flutter build web --release --no-tree-shake-icons
-        working-directory: .
+        working-directory: ${{ github.workspace }}
 
       - name: Deploy to /srv/cc_web
         run: |
