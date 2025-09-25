@@ -1,49 +1,54 @@
-name: Web Deploy
+name: web-deploy
 
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
-jobs:
-  build-and-deploy:
-    # ВАЛИДНЫЙ синтаксис: labels задаются внутри runs-on в виде массива
-    runs-on: [ self-hosted, linux, aidomio ]
+# Права для Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          cache: true
 
-      # Починить "dubious ownership" в кэше flutter внутри контейнера
-      - name: Fix git safe.directory for flutter cache
-        shell: bash
-        run: |
-          for d in /opt/hostedtoolcache/flutter/*/*; do
-            [ -d "$d" ] && git config --global --add safe.directory "$d" || true
-          done
+      - name: Flutter version
+        run: flutter --version
 
-      - name: Flutter doctor
-        run: |
-          flutter --version
-          flutter doctor -v
-
-      - name: Get deps
+      - name: Install deps
         run: flutter pub get
-        working-directory: ${{ github.workspace }}
 
-      - name: Build web (release)
-        run: flutter build web --release --no-tree-shake-icons
-        working-directory: ${{ github.workspace }}
+      # Приложение перенесено в корень → working-directory не нужен
+      - name: Build web
+        run: flutter build web --release --base-href "/"
 
-      - name: Deploy to /srv/cc_web
-        run: |
-          rm -rf /srv/cc_web/*
-          cp -r build/web/* /srv/cc_web/
-          echo "Deployed at $(date -Is)" > /srv/cc_web/DEPLOYED.txt
-        working-directory: .
+      - name: Upload artifact (build/web)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
