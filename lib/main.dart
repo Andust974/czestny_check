@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text('HonestCheck',
+                  const Text('HonestCheck (PR preview)',
                       style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 8),
                   Text(
@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Text('© 2025 HonestCheck',
+                  Text('© 2025 HonestCheck (PR preview)',
                       style: TextStyle(color: scheme.onSurfaceVariant)),
                 ],
               ),
