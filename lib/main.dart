@@ -9,13 +9,13 @@ class CzestnyCheckApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Czestny Check — Web',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFF6750A4),
         useMaterial3: true,
+        colorSchemeSeed: const Color(0xFF6750A4),
         scaffoldBackgroundColor: const Color(0xFFFAF6FF),
       ),
       home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -25,42 +25,60 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Czestny Check — Web')),
+      appBar: AppBar(
+        title: const Text('Czestny Check — Web'),
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 680),
+          constraints: const BoxConstraints(maxWidth: 760),
           child: Card(
             elevation: 2,
+            clipBehavior: Clip.antiAlias,
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Text(
-                    'Добро пожаловать 👋',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                    'HonestCheck',
+                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   Text(
-                    'Это демо-экран вместо “Hello, HonestCheck!”. Здесь можно быстро накидывать виджеты и логику.',
+                    'Мини-лендинг на Flutter Web. Здесь будет публичная страница проекта.',
                     textAlign: TextAlign.center,
+                    style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 16),
                   ),
                   const SizedBox(height: 20),
-                  FilledButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.check_circle_outline),
-                    label: const Text('Проверить что-нибудь'),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    alignment: WrapAlignment.center,
+                    children: [
+                      FilledButton(
+                        onPressed: () {},
+                        child: const Text('Войти (заглушка)'),
+                      ),
+                      OutlinedButton(
+                        onPressed: () {},
+                        child: const Text('Подробнее (заглушка)'),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    '© ${DateTime.now().year} HonestCheck',
+                    style: TextStyle(color: scheme.onSurfaceVariant),
                   ),
                 ],
               ),
             ),
           ),
         ),
-      ),
-      bottomNavigationBar: const Padding(
-        padding: EdgeInsets.all(12),
-        child: Text('© HonestCheck', textAlign: TextAlign.center),
       ),
     );
   }
