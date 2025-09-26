@@ -45,7 +45,6 @@ class HomeScreen extends StatelessWidget {
                   Text(
                     'Это демо-экран вместо “Hello, HonestCheck!”. Здесь можно быстро накидывать виджеты и логику.',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 20),
                   FilledButton.icon(
@@ -61,10 +60,7 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: const Padding(
         padding: EdgeInsets.all(12),
-        child: Text(
-          '© HonestCheck',
-          textAlign: TextAlign.center,
-        ),
+        child: Text('© HonestCheck', textAlign: TextAlign.center),
       ),
     );
   }
