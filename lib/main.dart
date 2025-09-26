@@ -9,13 +9,13 @@ class CzestnyCheckApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Czestny Check — Web',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorSchemeSeed: const Color(0xFF6750A4),
         useMaterial3: true,
+        colorSchemeSeed: const Color(0xFF6750A4),
         scaffoldBackgroundColor: const Color(0xFFFAF6FF),
       ),
       home: const HomeScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -25,31 +25,43 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Czestny Check — Web')),
+      appBar: AppBar(
+        title: const Text('Czestny Check — Web'),
+        backgroundColor: scheme.surface,
+        surfaceTintColor: Colors.transparent,
+      ),
       body: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
+          constraints: const BoxConstraints(maxWidth: 760),
           child: Card(
             elevation: 2,
-            margin: const EdgeInsets.all(16),
+            clipBehavior: Clip.antiAlias,
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('HonestCheck', style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: cs.primary)),
+                  const Text('HonestCheck',
+                      style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 8),
-                  const Text('Минимальный веб-скелет на Flutter для HonestCheck.'),
+                  Text(
+                    'Мини-лендинг на Flutter Web. Здесь будет публичная страница проекта.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 16),
+                  ),
+                  const SizedBox(height: 20),
+                  Wrap(
+                    spacing: 12, runSpacing: 12, alignment: WrapAlignment.center,
+                    children: [
+                      FilledButton(onPressed: () {}, child: const Text('Войти (заглушка)')),
+                      OutlinedButton(onPressed: () {}, child: const Text('Подробнее (заглушка)')),
+                    ],
+                  ),
                   const SizedBox(height: 16),
-                  Wrap(spacing: 12, runSpacing: 12, children: [
-                    FilledButton(onPressed: () {}, child: const Text('Начать')),
-                    OutlinedButton(onPressed: () {}, child: const Text('Документация')),
-                  ]),
-                  const SizedBox(height: 8),
-                  Text('build: ${String.fromEnvironment('FLUTTER_BUILD_MODE', defaultValue: 'release')}', style: Theme.of(context).textTheme.bodySmall),
+                  Text('© 2025 HonestCheck',
+                      style: TextStyle(color: scheme.onSurfaceVariant)),
                 ],
               ),
             ),

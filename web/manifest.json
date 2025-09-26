@@ -1,0 +1,9 @@
+{
+  "name": "Czestny Check",
+  "short_name": "CzCheck",
+  "start_url": "/czestny_check/",
+  "display": "standalone",
+  "background_color": "#FAF6FF",
+  "theme_color": "#6750A4",
+  "icons": []
+}
